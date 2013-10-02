@@ -1,0 +1,29 @@
+//make one LED go one if sensor tilted one way, then the other LED go on when it's
+//tilted the other way. Neither LED is on at the same time.
+
+const int tiltSensorPin = 2;             // tilt sensor is connected to pin2
+const int firstLEDPin = 12;              //pin13 connected to first LED
+const int secondLEDPin = 11;             //pin12 connected to second LED
+
+void setup()
+{
+  pinMode (tiltSensorPin, INPUT);        //makes sensor the input
+  digitalWrite (tiltSensorPin, HIGH);    
+
+  pinMode (firstLEDPin, OUTPUT);         //sets both LEDs as outputs
+  pinMode (secondLEDPin, OUTPUT);        
+  
+}
+
+void loop()
+{
+  if (digitalRead(tiltSensorPin)){       //if the sensor is tilted aka turned on like a button
+    digitalWrite(firstLEDPin, HIGH);     //if it is on, turn on the first LED
+    digitalWrite(secondLEDPin, LOW);     //and turn off the second LED
+  }
+  else{                                  //if it isn't on, then turn off LED1
+    digitalWrite(firstLEDPin, LOW);      //and turn on LED2 - 
+    digitalWrite(secondLEDPin, HIGH);    //this allows tilt one way, light goes on
+                                          // tilt another, other light goes on
+  }
+}
