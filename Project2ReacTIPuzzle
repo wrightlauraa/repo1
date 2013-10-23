@@ -1,0 +1,559 @@
+/*this project uses ReacTIVision and fiducial markers. 
+Each marker corresponds to an image. There are 12 images.
+The player must move the markers around on a poster board in the real world.
+When all the pieces are in the right spot, the picture is complete.
+Hence the name - ReacTIPuzzle.
+*/
+
+
+
+
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
+import TUIO.*;
+TuioProcessing tuioClient;
+import java.util.*; 
+
+
+Minim minim;
+AudioPlayer player;
+
+
+// these are some helper variables which are used
+// to create scalable graphical feedback
+float cursor_size = 15;
+float object_size = 60;
+float table_size = 760;
+float scale_factor = 1;
+PFont font;
+PImage img1;  
+PImage img2;
+PImage img3;
+PImage img4;
+PImage img5;
+PImage img6;
+PImage img7;
+PImage img8;
+PImage img9;
+PImage img10;
+PImage img11;
+PImage img12;
+
+//int[][] ObjCoor = new int[12][2];
+float distance;
+int count;
+
+//img 1
+int x_180 = 0;
+int y_180 = 0;
+boolean lock_180 = false;
+
+//img2
+int x_175 = 0;
+int y_175 = 0;
+boolean lock_175 = false;
+
+//img3
+int x_183 = 0;
+int y_183 = 0;
+boolean lock_183 = false;
+
+//img4
+int x_178 = 0;
+int y_178 = 0;
+boolean lock_178 = false;
+
+//img5
+int x_182 = 0;
+int y_182 = 0;
+boolean lock_182 = false;
+
+//img6
+int x_174 = 0;
+int y_174 = 0;
+boolean lock_174 = false;
+
+//img7
+int x_184 = 0;
+int y_184 = 0;
+boolean lock_184 = false;
+
+//img8
+int x_185 = 0;
+int y_185 = 0;
+boolean lock_185 = false;
+
+//img9
+int x_181 = 0;
+int y_181 = 0;
+boolean lock_181 = false;
+
+//img10
+int x_15 = 0;
+int y_15 = 0;
+boolean lock_15 = false;
+
+//img11
+int x_177 = 0;
+int y_177 = 0;
+boolean lock_177 = false;
+
+//img12
+int x_179 = 0;
+int y_179 = 0;
+boolean lock_179 = false;
+
+
+
+void setup()
+{
+  //size(screen.width,screen.height);
+  size(800, 1000);
+  noStroke();
+  fill(0);
+
+  loop();
+  frameRate(30);
+  //noLoop();
+
+
+  font = createFont("Arial", 18);
+  scale_factor = height/table_size;
+
+  // we create an instance of the TuioProcessing client
+  // since we add "this" class as an argument the TuioProcessing class expects
+  // an implementation of the TUIO callback methods (see below)
+  tuioClient  = new TuioProcessing(this);
+
+
+
+  img1 = loadImage("piece1.jpg");
+  img2 = loadImage("piece2.jpg");
+  img3 = loadImage("piece3.jpg");
+  img4 = loadImage("piece4.jpg");
+  img5 = loadImage("piece5.jpg");
+  img6 = loadImage("piece6.jpg");
+  img7 = loadImage("piece7.jpg");
+  img8 = loadImage("piece8.jpg");
+  img9 = loadImage("piece9.jpg");
+  img10 = loadImage("piece10.jpg");
+  img11 = loadImage("piece11.jpg");
+  img12 = loadImage("piece12.jpg");
+  
+  
+  minim = new Minim(this);
+  player = minim.loadFile("clapping.mp3");
+  
+}
+
+// within the draw method we retrieve a Vector (List) of TuioObject and TuioCursor (polling)
+// from the TuioProcessing client and then loop over both lists to draw the graphical feedback.
+void draw()
+{
+  background(255);
+  textFont(font, 18*scale_factor);
+  float obj_size = object_size*scale_factor; 
+  float cur_size = cursor_size*scale_factor; 
+
+  Vector tuioObjectList = tuioClient.getTuioObjects();
+  for (int i=0;i<tuioObjectList.size();i++) {
+    TuioObject tobj = (TuioObject)tuioObjectList.elementAt(i);
+
+    count=tuioObjectList.size();
+
+    ////////////////////  
+    //////markers set to diff pics, and follow marker on screen as it is moved IRL
+
+    if (tobj.getSymbolID()==180)
+    {
+      pushMatrix();
+      x_180 = width-(tobj.getScreenX(width));
+      y_180 = tobj.getScreenY(height);
+     // if (x_180 > 0 && x_180 < 120 && y_180 < 120 && y_180 > 0) {
+      //  x_180 = 75;
+      //  y_180 = 75;
+     //   lock_180 = true;
+      //  println("LOCK!");
+     // } 
+     // else {
+     //   lock_180 = false;
+     // }
+      image(img1, x_180, y_180);
+      rotate(tobj.getAngle());
+      popMatrix();
+      fill(255);
+      //text(""+tobj.getSymbolID(), x_180, y_180);
+      //    ObjCoor[3][0]=tobj.getScreenX(width);
+      //    ObjCoor[3][1]=tobj.getScreenY(height);
+    }
+
+
+    if (tobj.getSymbolID()==175)
+    {
+      
+        pushMatrix();
+        x_175 = width-(tobj.getScreenX(width));
+        y_175 = tobj.getScreenY(height);
+        /*if (x_175 > 151 && x_175 < 299 && y_175 < 149 && y_175 > 0) {
+          x_175 = 225;///center point
+          y_175 = 75;
+          lock_175 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_175 = false;
+        }*/
+        image(img2, x_175, y_175);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_175, y_175);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==183)
+      {
+        
+        pushMatrix();
+        x_183 = width-(tobj.getScreenX(width));
+        y_183 = tobj.getScreenY(height);
+       /* if (x_183 > 300 && x_183 < 415 && y_183 < 300 && y_183 > 0) {
+          x_183 = 375;
+          y_183 = 75;
+          lock_183 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_183 = false;
+        }*/
+        image(img3, x_183, y_183);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_183, y_183);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==178)
+      {
+        
+        pushMatrix();
+        x_178 = width-(tobj.getScreenX(width));
+        y_178 = tobj.getScreenY(height);
+       /* if (x_178 > 0 && x_178 < 149 && y_178 < 299 && y_178 > 151) {
+          x_178 = 75;
+          y_178 = 225;
+          lock_178 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_178 = false;
+        }*/
+        image(img4, x_178, y_178);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_178, y_178);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==182)
+      {
+        pushMatrix();
+        x_182 = width-(tobj.getScreenX(width));
+        y_182 = tobj.getScreenY(height);
+       /* if (x_182 > 151 && x_182 < 299 && y_182 < 299 && y_182 > 151) {
+          x_182 = 225;
+          y_182 = 225;
+          lock_182 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_182 = false;
+        }*/
+        image(img5, x_182, y_182);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_182, y_182);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==174)
+      {
+        pushMatrix();
+        x_174 = width-(tobj.getScreenX(width));
+        y_174 = tobj.getScreenY(height);
+        /*if (x_174 > 301 && x_174 < 415 && y_174 < 449 && y_174 > 301) {
+          x_174 = 375;
+          y_174 = 300;
+          lock_174 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_174 = false;
+        }*/
+        image(img6, x_174, y_174);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+       // text(""+tobj.getSymbolID(), x_174, y_174);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==184)
+      {
+        pushMatrix();
+        x_184 = width-(tobj.getScreenX(width));
+        y_184 = tobj.getScreenY(height);
+       /* if (x_184 > 0 && x_184 < 149 && y_184 < 449 && y_184 > 301) {
+          x_184 = 75;
+          y_184 = 375;
+          lock_184 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_184 = false;
+        }*/
+        image(img7, x_184, y_184);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_184, y_184);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==185)
+      {
+        pushMatrix();
+        x_185 = width-(tobj.getScreenX(width));
+        y_185 = tobj.getScreenY(height);
+       /* if (x_185 > 151 && x_185 < 299 && y_185 < 449 && y_185 > 301) {
+          x_185 = 225;
+          y_185 = 375;
+          lock_185 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_185 = false;
+        } */
+        image(img8, x_185, y_185);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_185, y_185);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==181)
+      {
+        pushMatrix();
+        x_181 = width-(tobj.getScreenX(width));
+        y_181 = tobj.getScreenY(height);
+        /*if (x_181 > 301 && x_181 < 145 && y_181 < 449 && y_181 > 301) {
+          x_181 = 375;
+          y_181 = 375;
+          lock_181 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_181 = false;
+        }*/
+        image(img9, x_181, y_181);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_181, y_181);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==15)
+      {
+        pushMatrix();
+        x_15 = width-(tobj.getScreenX(width));
+        y_15 = tobj.getScreenY(height);
+       /* if (x_15 > 0 && x_15 < 149 && y_15 < 599 && y_15 > 451) {
+          x_15 = 75;
+          y_15 = 525;
+          lock_15 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_15 = false;
+        }*/
+        image(img10, x_15, y_15);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_15, y_15);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==177)
+      {
+        pushMatrix();
+        x_177 = width-(tobj.getScreenX(width));
+        y_177 = tobj.getScreenY(height);
+        /*if (x_177 > 151 && x_177 < 299 && y_177 < 599 && y_177 > 451) {
+          x_177 = 225;
+          y_177 = 525;
+          lock_177 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_177 = false;
+        }*/
+        image(img11, x_177, y_177);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+        //text(""+tobj.getSymbolID(), x_177, y_177);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+      if (tobj.getSymbolID()==179)
+      {
+        pushMatrix();
+        x_179 = width-(tobj.getScreenX(width));
+        y_179 = tobj.getScreenY(height);
+        /*if (x_179 > 301 && x_179 < 599 && y_179 < 599 && y_179 > 451) {
+          x_179 = 375;
+          y_179 = 525;
+          lock_179 = true;
+          println("LOCK!");
+        } 
+        else {
+          lock_179 = false;
+        }*/
+        image(img12, x_179, y_179);
+        rotate(tobj.getAngle());
+        popMatrix();
+        fill(255);
+      //  text(""+tobj.getSymbolID(), x_179, y_179);
+        //    ObjCoor[3][0]=tobj.getScreenX(width);
+        //    ObjCoor[3][1]=tobj.getScreenY(height);
+      }
+
+     
+    }
+  
+
+  ////////////////////////////////////////////////////////////////////
+
+  ////////////////////
+
+
+  Vector tuioCursorList = tuioClient.getTuioCursors();
+  for (int i=0;i<tuioCursorList.size();i++) {
+    TuioCursor tcur = (TuioCursor)tuioCursorList.elementAt(i);
+    Vector pointList = tcur.getPath();
+
+    if (pointList.size()>0) {
+      stroke(0, 0, 255);
+      TuioPoint start_point = (TuioPoint)pointList.firstElement();
+      ;
+      for (int j=0;j<pointList.size();j++) {
+        TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
+        line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
+        start_point = end_point;
+      }
+    }
+
+      stroke(192, 192, 192);
+      fill(192, 192, 192);
+      ellipse( tcur.getScreenX(width), tcur.getScreenY(height), cur_size, cur_size);
+      fill(0);
+      text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
+    }
+  }
+
+
+
+boolean Distance()
+ {
+ for(int i=1;i<=count;i++)
+ {
+
+ if (distance<150)
+ {
+ 
+ return true;
+ }
+ }
+ return false;
+ }
+ 
+ void doSomething() {
+ 
+   //if they're all locked in place...
+ if (lock_180 && lock_175 && lock_183 && lock_178 && lock_182 && lock_174 && lock_184 && lock_185 && lock_181 && lock_15 && lock_177 && lock_179) {
+ 
+ // ....jear the clapping sound. 
+ 
+ player.play();
+ }
+ }
+
+
+
+
+
+// these callback methods are called whenever a TUIO event occurs
+
+// called when an object is added to the scene
+void addTuioObject(TuioObject tobj) {
+  //println("add object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle());
+}
+
+// called when an object is removed from the scene
+void removeTuioObject(TuioObject tobj) {
+  //println("remove object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+")");
+}
+
+// called when an object is moved
+void updateTuioObject (TuioObject tobj) {
+  //println("update object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle()
+  //  +" "+tobj.getMotionSpeed()+" "+tobj.getRotationSpeed()+" "+tobj.getMotionAccel()+" "+tobj.getRotationAccel());
+}
+
+// called when a cursor is added to the scene
+void addTuioCursor(TuioCursor tcur) {
+  //println("add cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY());
+}
+
+// called when a cursor is moved
+void updateTuioCursor (TuioCursor tcur) {
+  //println("update cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY()
+  //    +" "+tcur.getMotionSpeed()+" "+tcur.getMotionAccel());
+}
+
+// called when a cursor is removed from the scene
+void removeTuioCursor(TuioCursor tcur) {
+  //println("remove cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+")");
+}
+
+// called after each message bundle
+// representing the end of an image frame
+void refresh(TuioTime bundleTime) { 
+  redraw();
+}
+
+
+
+
+
