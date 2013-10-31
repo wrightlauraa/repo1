@@ -1,0 +1,112 @@
+//the server part
+
+
+
+
+import processing.net.*;
+Server server;
+
+
+PFont f;
+
+
+int width = 1000;
+int height = 500;
+
+int positionX;
+int positionY;
+
+int minStroke = 1;
+int maxStroke = 30;
+
+float strokeSize;
+float strokeColor;
+
+int data = 0;
+
+void setup() {
+  size(width, height);
+
+  f = createFont("Arial", 20, true);
+
+
+  server = new Server(this, 5204);
+
+
+  //  println(Serial.list());// list all of your serail ports
+
+  //port = new Serial(this, Serial.list()[12], 9600);//input the correct index of your serial port in the [] mine is 12
+  //port.bufferUntil('\n');
+}
+
+void draw()
+{
+  background(255);
+
+  positionX = mouseX;
+  positionY = mouseY;
+
+  if (positionX<=(width/2)) //width/2 determines the midpoint of the scene
+  {
+    fill(255, 0, 0);
+  }
+  if (positionX>(width/2))
+  {
+    fill(0, 255, 0);
+  }
+
+
+
+  strokeSize = map(positionX, 0, 1000, minStroke, maxStroke);// map(input value, input min, input max, output min, output max)
+  strokeWeight(strokeSize);
+
+  strokeColor = map(positionY, 0, height, 0, 255);
+  stroke(strokeColor);
+
+
+  ellipse(positionX, positionY, 50, 50);
+
+  data = (mouseX) % 256;
+  //  dataY = (mouseY);
+
+  // Broadcast data (the number is continuously sent to all clients because write() is called every cycle through draw())
+  //server.write(dataX, dataY);
+  server.write(data);
+
+  // Arbitrarily changing the value of data randomly
+
+
+  println(mouseX);
+  println(mouseY);
+}
+
+
+/*
+void serialEvent (Serial port)
+ {
+ String inString = port.readStringUntil('\n');
+ 
+ inString = trim(inString);
+ 
+ int[] nums = int(split(inString, ','));
+ 
+ 
+ if(nums[0]==1) //the values are sent in pairs, the first value at index [0] is the route number
+ {
+ println("Sensor 1 says: "+nums[1]);  
+ positionX=nums[1]; //this is needed because the nums[] variable has a scope limited to this function, so it cannot be used in the draw function
+ //ardInput1 is a global variable 
+ }
+ 
+ if(nums[0]==2)
+ {
+ println("Sensor 2 says: "+nums[1]); 
+ positionY=nums[1]; //this is needed because the nums[] variable has a scope limited to this function, so it cannot be used in the draw function
+ //ardInput2 is a global variable   
+ }
+ 
+ }
+ */
+
+
+
