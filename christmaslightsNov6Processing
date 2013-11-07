@@ -1,0 +1,123 @@
+//uses 3 LEDs hooked up to arduino
+//mouse over the boxes and the different LEDs light up
+
+ import processing.serial.*; 
+ 
+ float box1X;
+ float box1Y;
+ float box2X;
+ float box2Y;
+ float box3X;
+ float box3Y;
+ int boxSize = 20;
+ boolean mouseOverBox = false;
+ 
+ Serial port; 
+ 
+ void setup()  {
+ size(200, 200);
+ box1X = 25;
+ box1Y = 25;
+ rectMode(RADIUS); 
+  box2X = 80;
+ box2Y = 80;
+ 
+  box3X = 140;
+ box3Y = 140;
+ 
+ // List all the available serial ports in the output pane. 
+ // You will need to choose the port that the Arduino board is 
+ // connected to from this list. The first port in the list is 
+ // port #0 and the third port in the list is port #2. 
+ println(Serial.list()); 
+ 
+ // Open the port that the Arduino board is connected to (in this case #0) 
+ // Make sure to open the port at the same speed Arduino is using (9600bps) 
+ port = new Serial(this, Serial.list()[8], 9600); 
+ 
+ }
+ 
+ void draw() 
+ { 
+ background(0);
+ 
+ // Test if the cursor is over the box 
+ if (mouseX > box1X-boxSize && mouseX < box1X+boxSize && 
+ mouseY > box1Y-boxSize && mouseY < box1Y+boxSize) {
+ mouseOverBox = true;  
+ // draw a line around the box and change its color:
+ stroke(255); 
+ fill(153);
+ // send an 'H' to indicate mouse is over square:
+ port.write('R');       
+ } 
+ 
+ else {
+ // return the box to it's inactive state:
+ stroke(153);
+ fill(153);
+ // send an 'L' to turn the LED off: 
+ port.write('L');      
+ mouseOverBox = false;
+ }
+ 
+ 
+ 
+  // Test if the cursor is over the box 
+ if (mouseX > box2X-boxSize && mouseX < box2X+boxSize && 
+ mouseY > box2Y-boxSize && mouseY < box2Y+boxSize) {
+ mouseOverBox = true;  
+ // draw a line around the box and change its color:
+ stroke(255); 
+ fill(153);
+ // send an 'H' to indicate mouse is over square:
+ port.write('G');       
+ } 
+
+ else {
+ // return the box to it's inactive state:
+ stroke(153);
+ fill(153);
+ // send an 'L' to turn the LED off: 
+ port.write('A');      
+ mouseOverBox = false;
+ }
+ 
+ 
+ 
+  // Test if the cursor is over the box 
+ if (mouseX > box3X-boxSize && mouseX < box3X+boxSize && 
+ mouseY > box3Y-boxSize && mouseY < box3Y+boxSize) {
+ mouseOverBox = true;  
+ // draw a line around the box and change its color:
+ stroke(255); 
+ fill(153);
+ // send an 'H' to indicate mouse is over square:
+ port.write('Y');       
+ } 
+ 
+ else {
+ // return the box to it's inactive state:
+ stroke(153);
+ fill(153);
+ // send an 'L2' to turn the LED off: 
+ port.write('B');      
+ mouseOverBox = false;
+ }
+ 
+ 
+ // Draw the boxES
+ fill(255, 0, 0);
+ rect(box1X, box1Y, boxSize, boxSize);
+ noFill();
+ 
+ fill(0, 250, 0);
+ rect(box2X, box2Y, boxSize, boxSize);
+ noFill();
+ 
+ fill(250, 212, 18);
+ rect(box3X, box3Y, boxSize, boxSize);
+ noFill();
+ }
+ 
+ 
