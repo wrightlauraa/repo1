@@ -1,0 +1,312 @@
+import ddf.minim.*;
+// http://code.compartmental.net/tools/minim/manual-audioinput/
+// http://stackoverflow.com/questions/15753699/twitter-app-in-processing
+// http://blog.blprnt.com/blog/blprnt/updated-quick-tutorial-processing-twitter
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
+String outFilename = "out.txt";
+
+Minim minim;
+AudioInput in;
+
+import twitter4j.conf.*;
+import twitter4j.*;
+import twitter4j.auth.*;
+import twitter4j.api.*;
+
+import java.util.*;
+
+Twitter twitter;
+
+
+ArrayList points = new ArrayList();
+boolean drawing = false;
+int volume, zeroes, elapsedFrames, puntDist = 0;
+
+float r=random(0);
+float startPointX, startPointY, velUp = 0;
+int startMove = 20;
+int mult = 100;
+ 
+// http://arduino.cc/en/Tutorial/Smoothing
+int numReadings = 100;
+// 1000 = 3 readings per minute apparently
+// 3000 = 1 reading perm inute
+int[] readings = new int[numReadings];
+//int readings[numReadings];      // the readings from the analog input
+int index = 0;                  // the index of the current reading
+int total = 0;                  // the running total
+int average = 0;  
+
+int oldAverage = 0;
+
+float[] storedVals = new float[300];
+// how do we store the averages and hours in an array?
+int xPos = 1; 
+
+int h = hour();  // Values from 0 - 59
+int mi = minute();  // Values from 0 - 59
+int d = day(); // Values from 0-23
+int mo = month();
+int yr = year();
+
+void setup()
+{
+  size(512, 200);
+  // instatiate a Minim object
+  minim = new Minim(this);
+  // get a line out from Minim, 
+  // default sample rate is 44100, bit depth is 16
+  in = minim.getLineIn(Minim.STEREO, 512);
+  //println(in.left);
+
+  //ConfigurationBuilder cb = new ConfigurationBuilder();
+  ConfigurationBuilder cb = new ConfigurationBuilder();
+
+  cb.setOAuthConsumerKey("lcF1EdYQyIaCNvKakN55ZQ");
+  cb.setOAuthConsumerSecret("crHnE0ltFimGwMAH1fGQkU4Jj8mDl9mln7PzeTCe2Aw");
+  cb.setOAuthAccessToken("2196637356-DGfetY4uYSIkDFFTkeyKGL3w0Ua9hUkNqCOcp81");
+  cb.setOAuthAccessTokenSecret("ahz9l7JhigSCZNLHrQoqhXDkWJpm30PzNd9t4OiQB5fxE");
+
+  TwitterFactory tf = new TwitterFactory(cb.build());
+  twitter = tf.getInstance();
+  
+  //thread("refreshTweets");
+  
+   for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    readings[thisReading] = 0;
+  }
+  
+  // Write some text to the file
+  for(int i=0; i<10; i++){
+    appendTextToFile(outFilename, "Text " + i);
+  } 
+}
+
+void draw()
+{
+  background(0);
+  stroke(255);
+  // draw the waveforms
+  
+  int d = day();    // Values from 1 - 31
+  int m = month();  // Values from 1 - 12
+  int y = year(); 
+  
+
+  
+  volume = abs(int(in.right.get(1)*mult));
+  //println(volume); // PRINTING INPUT & X100 FOR SIZE, INTERGER FOR EASE!
+ // 
+
+  /*for (int i = 0; i < in.bufferSize() - 1; i++)
+  {
+    line(i, 50 + in.left.get(i)*50, i+1, 50 + in.left.get(i+1)*50);
+    line(i, 150 + in.right.get(i)*50, i+1, 150 + in.right.get(i+1)*50);
+  }*/
+
+ // at the edge of the screen, go back to the beginning:
+ 
+  
+  total = total - readings[index];        
+  // read from the sensor:  
+  
+  readings[index] = volume;
+  //readings[index] = analogRead(inputPin);
+  // add the reading to the total:  
+ 
+  total = total + readings[index];    
+  // advance to the next position in the array:  
+  
+   index = index + 1;                    
+
+  // if we're at the end of the array...
+  if (index >= numReadings)   {           
+    // ...wrap around to the beginning:
+    index = 0;                          
+  // calculate the average:
+  average = total / numReadings;        
+  // send it to the computer as ASCII digits
+ println(average); 
+//int s = second();  // Values from 0 - 59
+ // int m = minute();  // Values from 0 - 59   
+ //int h = hour(); 
+
+//int s = second();  // Values from 0 - 59
+  //int m = minute();  // Values from 0 - 59
+  
+  /*int which = frameCount % average;
+  mx[which] = oldAverage;
+  my[which] = h;
+   String exciting = new String(h + "," + average);*/
+ 
+  
+ }
+ // delay(1); }
+ //println(average);
+  talk(); 
+ oldAverage = average;
+ 
+ 
+ ////stuff to change for data file
+ 
+ float averageData = average;
+//float n = random(10,20); 
+
+
+String output = averageData + "," + h + ":" + mi + "," + d + "," + mo + "," + yr;
+
+
+
+appendTextToFile(outFilename, output);
+
+
+}
+////////////////////
+
+void talk() {
+
+  // if average now is different from average previous, and if its between these values, send out this tweet
+  // else do not send tweet
+  
+  /*if (oldAverage != average) {
+    text("It's pretty quiet in here.", 50, 30);
+    tweetchange();
+  }*/
+  
+ if ((oldAverage != average) && (average>=0) && (average<=1)) {
+    text("It's pretty quiet in here.", 50, 30);
+    tweetquiet();
+  }
+  
+
+  if ((oldAverage != average) && (average >=2) && (average <=4)) { //Draw if vol>1
+   text("It's medium.", 50, 30);
+    tweetmedium();
+  } 
+
+if ((oldAverage != average) && (average >=5) && (average <=7)) { //Draw if vol>1
+   text("It's loud.", 50, 30);
+    tweetloud();
+  } 
+  
+  if ((oldAverage != average) && (average >=8) && (average <=10)) { //Draw if vol>1
+   text("It's crazy loud.", 50, 30);
+    tweetcrazyloud();
+  } 
+  
+  /*else if ((volume > 24) && (volume < 34)) { // Draw darker, longer
+   drawing = true;
+   puntDist = 350;
+   mult = 100;
+   velUp = velUp/(random(-3,3));
+   fill (234, 252, 32, 55); // Colours - Mid-stroke change = col. grad!
+   zeroes = 0;
+   }*/
+}
+
+void tweetquiet()
+{
+  try 
+  {
+    Status status = twitter.updateStatus("It's pretty quiet at DFI right now.");
+    System.out.println("Status updated to [" + status.getText() + "].");
+  }
+  catch (TwitterException te)
+  {
+    System.out.println("Error: "+ te.getMessage());
+  }
+}
+
+void tweetchange()
+{
+  try 
+  {
+    Status status = twitter.updateStatus("THERE HAS BEEN A CHANGE.");
+    System.out.println("Status updated to [" + status.getText() + "].");
+  }
+  catch (TwitterException te)
+  {
+    System.out.println("Error: "+ te.getMessage());
+  }
+}
+
+void tweetmedium()
+{
+  try 
+  {
+    Status status = twitter.updateStatus("It's kinda loud. People are definitely talking.");
+    System.out.println("Status updated to [" + status.getText() + "].");
+  }
+  catch (TwitterException te)
+  {
+    System.out.println("Error: "+ te.getMessage());
+  }
+}
+
+void tweetloud()
+{
+  try 
+  {
+    Status status = twitter.updateStatus("Super loud here today. Avoid if you need a quiet space!");
+    System.out.println("Status updated to [" + status.getText() + "].");
+  }
+  catch (TwitterException te)
+  {
+    System.out.println("Error: "+ te.getMessage());
+  }
+}
+
+void tweetcrazyloud()
+{
+  try 
+  {
+    Status status = twitter.updateStatus("There's a rave going on at the DFI studio right now. It's crazy loud.");
+    System.out.println("Status updated to [" + status.getText() + "].");
+  }
+  catch (TwitterException te)
+  {
+    System.out.println("Error: "+ te.getMessage());
+  }
+}
+
+//text( (status.getText(),status.getCreatedAt() ),
+
+
+void appendTextToFile(String filename, String text){
+  File f = new File(dataPath(filename));
+  if(!f.exists()){
+    createFile(f);
+  }
+  try {
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+    out.println(text);
+    out.close();
+  }catch (IOException e){
+      e.printStackTrace();
+  }
+}
+
+/**
+ * Creates a new file including all subfolders
+ */
+void createFile(File f){
+  File parentDir = f.getParentFile();
+  try{
+    parentDir.mkdirs(); 
+    f.createNewFile();
+  }catch(Exception e){
+    e.printStackTrace();
+  }
+} 
+
+void stop()
+{
+  // always close audio I/O classes
+  in.close();
+  // always stop your Minim object
+  minim.stop();
+
+  super.stop();
+}
