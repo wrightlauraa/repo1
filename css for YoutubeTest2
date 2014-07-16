@@ -1,0 +1,72 @@
+element.style {
+}
+
+head {
+display: none;
+}
+
+{
+cursor: default;
+font-size: 100%;
+overflow-y: scroll;
+
+}
+
+body {
+color: #444444;
+font-family: Helvetica, Arial, sans-serif;
+  background-image: url("pyramid.png");
+}
+
+body, form, input, button, select, textarea {
+font-size: 100%;
+margin: 40px;
+  text-align: center;
+}
+
+p {
+
+  margin-right: 40px;
+    margin-top: 40px;
+    margin-left: 40px;
+ 
+}
+
+{
+display: block;
+margin: 8px;
+}
+
+ {
+cursor: default;
+ }
+
+section.header {
+
+color: #00F;
+text-align: center;
+font-size: 250%;
+position: fixed;
+
+  background-color: #444;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  opacity: 0.4;
+}
+
+.youtube {
+
+ display: block;
+ margin-left: auto;
+ margin-right: auto;
+ margin-bottom: 150px; 
+  
+
+}
+
+.button {
+margin-left: 10px;
+
+
+}
