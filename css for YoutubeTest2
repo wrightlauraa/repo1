@@ -14,7 +14,7 @@ overflow-y: scroll;
 
 body {
 color: #444444;
-font-family: Helvetica, Arial, sans-serif;
+font-family: Optima;
   background-image: url("pyramid.png");
 }
 
@@ -25,7 +25,7 @@ margin: 40px;
 }
 
 p {
-
+font-family: Optima;
   margin-right: 40px;
     margin-top: 40px;
     margin-left: 40px;
@@ -42,17 +42,14 @@ cursor: default;
  }
 
 section.header {
-
-color: #00F;
+font-family: Optima;
+color: #751947;
 text-align: center;
-font-size: 250%;
-position: fixed;
-
-  background-color: #444;
+font-size: 150%;
+  background-color: #E6E6E6;
   left: 0;
   right: 0;
-  z-index: -1;
-  opacity: 0.4;
+  <!-- opacity: 0.4; -->
 }
 
 .youtube {
