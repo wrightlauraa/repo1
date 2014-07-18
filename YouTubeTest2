@@ -1,50 +1,39 @@
 <!DOCTYPE html>
 
+<script src="arduinolink.js"></script>
 <link rel="stylesheet" type="text/css" href="youtubepagestyle.css" media="screen" />
 
   <body>
-      
+
      <section class="header">
       <h1>Loadin' Vids</h1>
+         <h2>By Laura Wright</h2>
+         <a href="http://laurawright.4ormat.com/about"><img src="laurapic.jpg" width="100" height="100"></a>
   </section>
-    
-    <!--find play video function in java then  -->
-    
-      <div>
-      &nbsp;
-         
-      
-      
-      </div>
-      
-        <div> &nbsp;</div>
-      
-        <div> &nbsp;</div>
-      
-        <div> &nbsp;</div>
-      
-      
-        <div> &nbsp;</div>
-      
-        <div> &nbsp;</div>
-      
-        <div> &nbsp;</div>
-      
+
+    <!-- need to find play video function in java -->
+
         <div> &nbsp;</div>
         <div> &nbsp;</div>
-      
-<!-- You can embed  multiple Youtube videos on a page -->
-      
-      <button type="button">About Me</button>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+        <div> &nbsp;</div>
+
+
+
 <div class="youtube" id="qtlB7q96NMs" style="width:560px; height: 315px;">
 <p>Arnold Schwarzenegger and Danny Devito in 'Twins'</p>
-    
+
   </div>
 
 <div class="youtube" id="ydvPdpinGiE" style="width:560px; height: 315px;">
 
     <p>Lisa Simpson Feminist Hero</p>
-    
+
     </div>
 
 <!-- Include the JavaScript only once -->
@@ -93,7 +82,11 @@ for (var i=0; i<videos.length; i++) {
 
 </script>
 
-    
-    
+
+
 </body>
+
+
+
+
 </html>
