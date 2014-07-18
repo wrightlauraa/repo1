@@ -1,0 +1,26 @@
+/*This code gets arduino and javascript working together.
+The problem is that I don't know how to get the BTNPIN
+to play the video, as opposed to turn on the LEDPIN, which
+is what it does now. */
+
+
+
+var j5 = require("johnny-five");
+var board = new j5.Board();
+var LEDPIN = 8; 
+var BTNPIN = 7;
+
+var ledOn = false;
+
+board.on("ready", function(){
+  var led = new j5.Led(LEDPIN);
+  var btn = new j5.Button(BTNPIN);
+
+  btn.on("hit", function(){
+    led.on();
+  });
+
+  btn.on("release", function(){
+    led.off();
+  });
+});
